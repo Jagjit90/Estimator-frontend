@@ -1,0 +1,44 @@
+
+.btn {
+  padding: 10px;
+  border-radius: 20px;
+  background-color: darksalmon;
+  color: white;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.App {
+  max-width: fit-content;
+  position: absolute;
+}
+.customform {
+  width: 100%;
+  margin: 0 auto;
+  margin: 25px;
+}
+
+.Multiple-select {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 10px;
+}
+.card {
+  margin: 10px;
+}
+.basic-info {
+  width: 100%;
+  /* margin-left: auto;
+  margin-right: auto; */
+  border: 1px solid lightgray;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 5px 10px 18px gray;
+}
+.print-btns {
+  text-align: center;
+}
+.mainContainer{
+  display: flex;
+  justify-content: center;
+}
