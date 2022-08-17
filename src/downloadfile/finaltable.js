@@ -6,6 +6,7 @@ import { CSVLink } from "react-csv";
 // import "./myStyle.css";
 
 const Download = () => {
+  console.log("hii");
   const projectBasic = useSelector(
     (state) => state.userProject.projectinfo.data
   );
