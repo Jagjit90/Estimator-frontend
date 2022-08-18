@@ -1,4 +1,3 @@
-
 {
   "name": "estimator",
   "version": "0.1.0",
@@ -23,7 +22,7 @@
     "react-export-excel": "^0.5.3",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^2.1.3",
     "react-table": "^7.8.0",
     "react-to-pdf": "^0.0.14",
     "react-toastify": "^9.0.8",

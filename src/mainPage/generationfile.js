@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+
 import { Outlet, useNavigate } from "react-router-dom";
-import { Button } from "bootstrap";
+
 import axios from "axios";
 import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
+
 import "./main.css";
 import { projectInfo } from "../actions/projectinfo";
 import { useSelector, useDispatch } from "react-redux";
@@ -136,7 +136,7 @@ const Generatepdf = () => {
       .then((res) => {
         dispatch(projectInfo(res.data));
         alert("Basic Information added successfully...");
-        return navigate("/addmodules", { replace: true });
+        navigate("/addmodules", { replace: true });
         return <Outlet />;
       })
       .catch((err) => {

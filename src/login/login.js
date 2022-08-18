@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { loginUserDispatch }  from '../actions/index';
 import {useSelector, useDispatch} from 'react-redux'
 // import { Navigate } from "react-router-dom";
@@ -13,8 +13,8 @@ import {
   Button,
 } from "@material-ui/core";
 import "../App";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import  ToastContainer  from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage = () => {
 
@@ -32,7 +32,7 @@ const LoginPage = () => {
   };
 
   const login = async (e) => {
-    const res = await axios
+   await axios
       .post("http://localhost:8000/api/user/login", {
         email,
         password,
@@ -41,14 +41,14 @@ const LoginPage = () => {
 
         dispatch(loginUserDispatch(res.data))
 
-        toast(res.data.msg);
+        // toast(res.data.msg);
         localStorage.setItem("security", res.data.accessToken);
         // navigate('/');
 
       })
       .catch((err) => {
         console.log("err===>",err);
-        toast(err.message);
+        // toast(err.message);
       });
   };
 
@@ -97,7 +97,7 @@ const LoginPage = () => {
               {" "}
               Login{" "}
             </Button>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
           </Grid>
         </Grid>
       </Paper>

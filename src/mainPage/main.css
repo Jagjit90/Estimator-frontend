@@ -9,8 +9,13 @@
 }
 
 .App {
-  max-width: fit-content;
-  position: absolute;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  /* max-width: fit-content;
+  position: absolute; */
 }
 .customform {
   width: 100%;
@@ -39,6 +44,7 @@
   text-align: center;
 }
 .mainContainer{
-  display: flex;
+
+
   justify-content: center;
-}
+} 

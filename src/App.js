@@ -1,4 +1,5 @@
 
+import React from "react";
 import "./App.css";
 import LoginPage from "./login/login";
 import HomePage from "./addModules";
