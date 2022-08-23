@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import Card from "react-bootstrap/Card";
-// import { Button } from "bootstrap";
 import Form from "react-bootstrap/Form";
 import { Outlet, useNavigate } from "react-router-dom";
 import "./module.css";
 
-import AddModule from "./AddModule";
-
 import { allModulesData } from "./actions/allmodulesdata";
 import { customModules } from "./actions/custom_modules";
 import { useSelector, useDispatch } from "react-redux";
-import { hasPointerEvents, wait } from "@testing-library/user-event/dist/utils";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faXmarkCircle,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { current } from "@reduxjs/toolkit";
 
 const HomePage = () => {
   const [visible, setVisible] = useState(false);
   const [form, setForm] = useState([]);
-
-  const [formData, setFormData] = useState([serviceList]);
+  const [updateform, setUpdateform] = useState(false);
 
   const [serviceList, setServiceList] = useState({
     moduleName: "",
@@ -27,7 +28,7 @@ const HomePage = () => {
     backendHours: "",
     testingHours: "",
   });
-
+  const [formData, setFormData] = useState([serviceList]);
   // for updating your database data from api
   const [dbMod, setDbMod] = useState({
     moduleName: "",
@@ -38,18 +39,7 @@ const HomePage = () => {
     testingHours: "",
   });
 
-  // const [serviceList, setServiceList] = useState([
-  //   {
-  //     m_title: "",
-  //     m_Desc: "",
-  //     m_design_time: "",
-  //     m_frontend: "",
-  //     m_backend: "",
-  //     m_testing: "",
-  //   }
-  // ]
-  // );
-
+  const [list, setList] = useState([]);
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
@@ -57,19 +47,16 @@ const HomePage = () => {
     (state) => state.custommod.custommodules
   );
 
-  console.log("custom modules===>", customModulesdata);
+
 
   const projectinfo = useSelector((state) => state);
-  console.log("all modules from reducer", projectinfo);
-
-  const [list, setList] = useState([]);
 
   useEffect(() => {
     getAllModules();
   }, []);
 
   useEffect(() => {
-    console.log("list", list);
+    // console.log("list", list);
   }, [list]);
 
   const getAllModules = async (e) => {
@@ -77,51 +64,65 @@ const HomePage = () => {
       .get("http://localhost:8000/api/module/getAllModule")
       .then((res) => {
         const data = res.data.data;
-        console.log("data===>", data);
-
         setList(data);
-        setDbMod(data)
-
-console.log("modules=======>myyy",dbMod);
-
         dispatch(allModulesData(data));
-
-        // navigate('/');
       })
       .catch((err) => {
         console.log("err===>", err);
       });
   };
 
-  const handleModule = (e) => {
-    console.log("name",e.target.name,"value",e.target.value)
-
+  const updateOriginalModules = (e) => {
     setDbMod({ ...dbMod, [e.target.name]: e.target.value });
+  };
 
-    console.log("dbmode data===>",dbMod);
+  const handleModule = (e) => {
+  
+    const listing2 =list &&
+      list.map((item, index) => {
+        if (item._id === dbMod._id) {
+          return (item = dbMod);
+        }
+        return item;
+      });
+    setList(listing2);
+    dispatch(allModulesData(listing2));
+    setUpdateform(false);
   };
 
   // on save button
   const addCustomModules = (e) => {
-    console.log([...form, serviceList]);
     setForm([...form, serviceList]);
     dispatch(customModules([...form, serviceList]));
-    console.log("services===>", form);
-  };
-
-  // for adding form
-  const handleform = (e) => {
-    //  setFormData([...formData, serviceList]);
-    //   console.log(formData);
   };
 
   const handleremove = (index) => {
-    console.log("index===>", index);
-    console.log("serviceList===>", serviceList);
 
-    console.log("formData===>", formData);
-    formData.splice(index, 1);
-    setFormData([...formData]);
+   setList((current) =>
+      current.filter((obj) => {
+        return obj._id !== index._id;
+      })
+    );
+  };
+
+  const handleremovecustom = (index) => {
+    form.splice(index, 1);
+    setForm([...form]);
+    dispatch(customModules([...form]));
+  };
+
+  const handleupdate = (id) => {
+    setUpdateform(true);
+    const found = list.find((obj) => {
+      return obj._id === id;
+    });
+
+    setDbMod(found);
+    console.log("found===>", found);
+  };
+
+  const handleeditcustom = (index) => {
+    console.log("index===>update", index);
   };
 
   const handlecustomchange = (e) => {
@@ -130,7 +131,7 @@ console.log("modules=======>myyy",dbMod);
   };
 
   const download = (e) => {
-    navigate("/download", { replace: true });
+    navigate("/download");
     return <Outlet />;
   };
 
@@ -145,17 +146,30 @@ console.log("modules=======>myyy",dbMod);
             return (
               <div className="stylediv">
                 <div className="style_module">
+                  <div className="topeditsec">
+                    <FontAwesomeIcon
+                      icon={faXmarkCircle}
+                      onClick={(e) => {
+                        handleremove(value);
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      onClick={(e) => {
+                        handleupdate(value._id);
+                      }}
+                    />
+
+                  
+                  </div>
+
                   <h5>{value.moduleName}</h5>
                   <p>{value.moduleDescription}</p>
                   <Form.Label>Designing Hrs</Form.Label>
                   <Form.Control
                     type="Number"
                     name="designerHours"
-                    // value={dbMod.designerHours}
                     value={value.designerHours}
-                    onChange={(e) => {
-                      handleModule(e);
-                    }}
                     placeholder="Designing time"
                   />
 
@@ -164,9 +178,6 @@ console.log("modules=======>myyy",dbMod);
                     type="Number"
                     value={value.frontendHours}
                     name="frontendHours"
-                    onChange={(e) => {
-                      handleModule(e);
-                    }}
                     placeholder="Designing time"
                   />
                   <Form.Label>Backend Dev Hrs</Form.Label>
@@ -174,9 +185,6 @@ console.log("modules=======>myyy",dbMod);
                     type="Number"
                     value={value.backendHours}
                     name="backendHours"
-                    onChange={(e) => {
-                      handleModule(e);
-                    }}
                     placeholder="Designing time"
                   />
                   <Form.Label>Testing (Frontend and Backend)</Form.Label>
@@ -184,9 +192,6 @@ console.log("modules=======>myyy",dbMod);
                     type="Number"
                     value={value.testingHours}
                     name="testingHours"
-                    onChange={(e) => {
-                      handleModule(e);
-                    }}
                     placeholder="Designing time"
                   />
                 </div>
@@ -202,6 +207,20 @@ console.log("modules=======>myyy",dbMod);
                 return (
                   <div className="stylediv">
                     <div className="style_module">
+                      <div className="topeditsec">
+                        <FontAwesomeIcon
+                          icon={faXmarkCircle}
+                          onClick={(e) => {
+                            handleremovecustom(key);
+                          }}
+                        />
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          onClick={(e) => {
+                            handleeditcustom(key);
+                          }}
+                        />
+                      </div>
                       <h5>{value.moduleName}</h5>
                       <p>{value.moduleDescription}</p>
                       <Form.Label>Designing Hrs</Form.Label>
@@ -244,10 +263,7 @@ console.log("modules=======>myyy",dbMod);
         >
           Add Module
         </button>
-        {/* {formData.map((single, index) => {
-          return (
-            <> */}
-
+       
         {visible === true ? (
           <div className="submode">
             <Form.Label>Module Name</Form.Label>
@@ -314,6 +330,7 @@ console.log("modules=======>myyy",dbMod);
               }}
               placeholder=""
             />
+
             <button onClick={(e) => addCustomModules(e)} className="btn">
               Save Changes
             </button>
@@ -321,25 +338,96 @@ console.log("modules=======>myyy",dbMod);
         ) : (
           ""
         )}
-        {/* <button onClick={() => handleremove(index)} className="btn">
-                Remove module
-              </button>
-              */}
-        {/* {formData.length - 1 === index && formData.length < 4 && (
-                <button onClick={handleform} className="btn">
-                  Add Module
-                </button>
-              )} */}
 
-        {/* 
-            </>
-          ); */}
-        {/* })} */}
-
+      
         <button onClick={(e) => download(e)} className="btn">
           Download
         </button>
       </div>
+      {console.log(updateform === true, "neha")}
+
+      {updateform === true ? (
+        <div className="myupdatemodule1">
+          <div className="submode1">
+            <FontAwesomeIcon
+              icon={faXmarkCircle}
+              onClick={() => setUpdateform(false)}
+            />
+            <Form.Label>
+              <h3>Update Module Data</h3>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              name="moduleName"
+              value={dbMod.moduleName}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder="Designing time"
+            />
+            <Form.Label>Module Description</Form.Label>
+
+            <Form.Control
+              type="text"
+              name="moduleDescription"
+              value={dbMod.moduleDescription}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder="Designing time"
+            />
+
+            <Form.Label>Designing Hrs</Form.Label>
+            <Form.Control
+              type="Number"
+              name="designerHours"
+              value={dbMod.designerHours}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder="Designing time"
+            />
+
+            <Form.Label>Frontend Dev Hrs</Form.Label>
+            <Form.Control
+              type="Number"
+              name="frontendHours"
+              value={dbMod.frontendHours}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder="Designing time"
+            />
+            <Form.Label>Backend Dev Hrs</Form.Label>
+            <Form.Control
+              type="Number"
+              name="backendHours"
+              value={dbMod.backendHours}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder="Designing time"
+            />
+            <Form.Label>Testing (Frontend and Backend)</Form.Label>
+
+            <Form.Control
+              type="Number"
+              name="testingHours"
+              value={dbMod.testingHours}
+              onChange={(e) => {
+                updateOriginalModules(e);
+              }}
+              placeholder=""
+            />
+
+            <button onClick={(e) => handleModule(e)} className="btn">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
 };

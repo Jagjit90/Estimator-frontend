@@ -30,5 +30,20 @@
     border: 2px solid black;
     border-radius: 5px;
 }
-
-
+.check {
+    padding: 5px;
+}
+.submode1{
+    padding: 10px;
+    position: fixed;
+    width: 350px;
+    top: 26%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -250px;
+    z-index: 9999999;
+    background-color: aliceblue;
+    border : 2px solid black;
+    border-radius: 5px;
+    --darkreader-inline-bgcolor: #ffffff;
+}

@@ -20,6 +20,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/addmodules" element={<HomePage />} />
         <Route path="/download" element={<Download />} />
+        {/* <Route path="/share" element={<Download />} /> */}
       </Routes>
     </>
   );

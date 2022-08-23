@@ -10,6 +10,7 @@ const Navigation = () => {
         <Link className="links" to="/">Home</Link>
         <Link className="links" to="/login">login</Link>
         <Link className="links" to="/logout">Logout</Link>
+        <Link className="links" to="#">Share</Link>
       </div>
     </>
   );
