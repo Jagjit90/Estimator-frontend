@@ -181,6 +181,8 @@ const Generatepdf = () => {
           dispatch(projectInfo(res.data));
           alert("Basic Information added successfully...");
           navigate("/addmodules", { replace: true });
+          // navigate(`/addmodules/${res.data.data._id}`);
+            // console.log("id",res.data.data._id);
           return <Outlet />;
         })
         .catch((err) => {

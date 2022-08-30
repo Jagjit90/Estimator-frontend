@@ -4,8 +4,9 @@ import Form from "react-bootstrap/Form";
 import { Outlet, useNavigate } from "react-router-dom";
 import "./module.css";
 
+
 import { allModulesData } from "./actions/allmodulesdata";
-import { customModules } from "./actions/custom_modules";
+import { customModules  } from "./actions/custom_modules";
 import { useSelector, useDispatch } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,6 +40,7 @@ const HomePage = () => {
     testingHours: "",
   });
 
+  const [projectinfo, setProjectinfo] = useState();
   const [list, setList] = useState([]);
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -49,19 +51,38 @@ const HomePage = () => {
 
 
 
-  const projectinfo = useSelector((state) => state);
+  // const projectinfo = useSelector((state) => state);
 
   useEffect(() => {
+
+    getprojectinfo();
+
     getAllModules();
   }, []);
 
   useEffect(() => {
     // console.log("list", list);
+    // / console.log("list", list);
   }, [list]);
+
+
+  // get project data from db
+ const getprojectinfo = async () =>{
+  await axios
+  .get("https://project-estimator-backend.herokuapp.com/api/module/getAllModule")
+  .then((res) => {
+    const data = res.data.data;
+    setList(data);
+    dispatch(allModulesData(data));
+  })
+  .catch((err) => {
+    console.log("err===>", err);
+  });
+ }
 
   const getAllModules = async (e) => {
     await axios
-      .get("http://localhost:8000/api/module/getAllModule")
+      .get("https://project-estimator-backend.herokuapp.com/api/module/getAllModule")
       .then((res) => {
         const data = res.data.data;
         setList(data);
@@ -130,6 +151,22 @@ const HomePage = () => {
     setServiceList({ ...serviceList, [e.target.name]: e.target.value });
   };
 
+
+  // link generate for sharing
+  const generatelink = () => {
+
+    //
+    axios.post('https://project-estimator-backend.herokuapp.com/api/project/getSingleProject',{_id:"62f751ccff2396ec56fc803e"}).then((res)=>{
+     console.log("project data",res);
+    }).catch((err)=>{
+      console.log("err",err);
+    })
+    console.log();
+
+  // alert("inprogress");
+
+  }
+
   const download = (e) => {
     navigate("/download");
     return <Outlet />;
@@ -138,6 +175,17 @@ const HomePage = () => {
   return (
     <>
       <div className="myallmodules">
+<div className="Basic-project-info">
+
+
+</div>
+
+
+
+
+
+<button onClick={generatelink}>Generate Share link</button>
+
         <h2>Please select Your Modules Here</h2>
 
         {/* data from database */}

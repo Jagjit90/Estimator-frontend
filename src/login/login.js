@@ -35,7 +35,7 @@ const LoginPage = () => {
 
   const login = async (e) => {
     await axios
-      .post("http://localhost:8000/api/user/login", {
+      .post("https://project-estimator-backend.herokuapp.com/api/user/login", {
         email,
         password,
       })
